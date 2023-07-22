@@ -11,7 +11,7 @@ import {
 const HomeScreen = ({navigation}: any) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('Eventss');
+      navigation.navigate('SignIn');
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -22,13 +22,13 @@ const HomeScreen = ({navigation}: any) => {
       <StatusBar backgroundColor="transparent" translucent />
 
       <ImageBackground
-        source={require('../Assets/Images/Splash.jpeg')}
+        source={require('../assets/images/Splash.jpeg')}
         style={styles.Image}
       />
       <View style={styles.LogoContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Eventss')}>
           <Image
-            source={require('../Assets/Images/gloverslogo.png')}
+            source={require('../assets/images/gloverslogo.png')}
             style={styles.Logo}
           />
         </TouchableOpacity>

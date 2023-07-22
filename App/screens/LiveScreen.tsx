@@ -9,103 +9,115 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const data = [
-  {
-    id: 1,
-    location: 'New York City',
-    team1: 'Red Sox',
-    team2: 'Yankees',
-    score1: 3,
-    score2: 0,
-    subTitle: '1',
-  },
-  {
-    id: 2,
-    location: 'New York City',
-    team1: 'Tigers',
-    team2: 'Yankees',
-    score1: 0,
-    score2: 1,
-    subTitle: '2',
-  },
-];
+const LiveScreen = () => {
+  const datas = [
+    {
+      id: 1,
+      location: 'New York City',
+      team1: 'Red Sox',
+      team2: 'Yankees',
+      score1: 3,
+      score2: 0,
+      subTitle: '1',
+    },
+    {
+      id: 2,
+      location: 'New York City',
+      team1: 'Tigers',
+      team2: 'Yankees',
+      score1: 0,
+      score2: 1,
+      subTitle: '2',
+    },
+    {
+      id: 3,
+      location: 'New York City',
+      team1: 'Tigers',
+      team2: 'Yankees',
+      score1: 0,
+      score2: 1,
+      subTitle: '2',
+    },
+  ];
 
-const renderItem = ({item}: any) => (
-  <View style={styles.Cardss}>
-    <View>
-      <View style={{flexDirection: 'row'}}>
-        <View style={styles.imageContainer}>
+  const renderItem = ({item}: any) => (
+    <View style={styles.Cardss}>
+      <View>
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('../assets/images/baseball.png')}
+              style={styles.Ball}
+            />
+          </View>
           <Image
-            source={require('../Assets/Images/baseball.png')}
-            style={styles.Ball}
+            source={require('../assets/images/locationMarkIcon.png')}
+            style={styles.Location}
           />
+          <Text style={styles.LocationText}>{item.location}</Text>
+          <View>
+            <Text style={styles.TodayText}>Today</Text>
+            <Text style={styles.TimeText}>03.00 PM</Text>
+          </View>
         </View>
-        <Image
-          source={require('../Assets/Images/locationMarkIcon.png')}
-          style={styles.Location}
-        />
-        <Text style={styles.LocationText}>{item.location}</Text>
-        <View>
-          <Text style={styles.TodayText}>Today</Text>
-          <Text style={styles.TimeText}>03.00 PM</Text>
-        </View>
-      </View>
 
-      <View style={styles.SmallIconView}>
-        <Image
-          source={require('../Assets/Images/redsocksLogo.png')}
-          style={styles.SmallIcon}
-        />
-        <Text style={styles.Team1Text}>{item.team1}</Text>
-        <Text style={styles.Score1Text}>{item.score1}</Text>
+        <View style={styles.SmallIconView}>
+          <Image
+            source={require('../assets/images/redsocksLogo.png')}
+            style={styles.SmallIcon}
+          />
+          <Text style={styles.Team1Text}>{item.team1}</Text>
+          <Text style={styles.Score1Text}>{item.score1}</Text>
 
-        <View>
-          <View style={styles.containerss}>
-            <View
-              style={[styles.square, {transform: [{rotate: '45deg'}]}]}></View>
-            <View>
+          <View>
+            <View style={styles.containerss}>
               <View
                 style={[
-                  styles.square2,
+                  styles.square,
                   {transform: [{rotate: '45deg'}]},
                 ]}></View>
+              <View>
+                <View
+                  style={[
+                    styles.square2,
+                    {transform: [{rotate: '45deg'}]},
+                  ]}></View>
+              </View>
+              <View
+                style={[
+                  styles.square3,
+                  {
+                    transform: [{rotate: '45deg'}],
+                    backgroundColor: item.id === 2 ? '#99bfdd' : '#bc3f3d',
+                  },
+                ]}></View>
             </View>
-            <View
-              style={[
-                styles.square3,
-                {
-                  transform: [{rotate: '45deg'}],
-                  backgroundColor: item.id === 2 ? '#99bfdd' : '#bc3f3d',
-                },
-              ]}></View>
+            <Text style={{marginTop: 5, color: 'black', marginRight: 50}}>
+              {item.id === 1 ? '2-2,1 out' : '0-0,0 out'}
+            </Text>
           </View>
-          <Text style={{marginTop: 5, color: 'black', marginRight: 50}}>
-            {item.id === 1 ? '2-2,1 out' : '0-0,0 out'}
-          </Text>
+        </View>
+
+        <View style={styles.SmallIconView}>
+          <Image
+            source={require('../assets/images/yankeesLogo.png')}
+            style={styles.SmallIcon}
+          />
+          <Text style={styles.Team2Text}>{item.team2}</Text>
+          <Text style={styles.Score2Text}>{item.score2}</Text>
         </View>
       </View>
 
-      <View style={styles.SmallIconView}>
+      <View style={styles.LiveCameraView}>
         <Image
-          source={require('../Assets/Images/yankeesLogo.png')}
-          style={styles.SmallIcon}
+          source={require('../assets/images/Video_CameraIcon.png')}
+          style={styles.LiveCamera}
         />
-        <Text style={styles.Team2Text}>{item.team2}</Text>
-        <Text style={styles.Score2Text}>{item.score2}</Text>
+        <Text style={styles.GoLiveText}>Go Live</Text>
       </View>
     </View>
+  );
 
-    <View style={styles.LiveCameraView}>
-      <Image
-        source={require('../Assets/Images/Video_CameraIcon.png')}
-        style={styles.LiveCamera}
-      />
-      <Text style={styles.GoLiveText}>Go Live</Text>
-    </View>
-  </View>
-);
-
-const LiveScreen = () => {
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
@@ -114,13 +126,13 @@ const LiveScreen = () => {
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity>
             <Image
-              source={require('../Assets/Images/search_big.png')}
+              source={require('../assets/images/search_big.png')}
               style={styles.Search}
             />
           </TouchableOpacity>
           <TouchableOpacity>
             <Image
-              source={require('../Assets/Images/notification_bell.png')}
+              source={require('../assets/images/notification_bell.png')}
               style={styles.Notification_bell}
             />
           </TouchableOpacity>
@@ -128,9 +140,9 @@ const LiveScreen = () => {
       </View>
 
       <FlatList
-        data={data}
+        data={datas}
         renderItem={renderItem}
-        keyExtractor={item => item.subTitle}
+        keyExtractor={item => item.id}
       />
     </View>
   );

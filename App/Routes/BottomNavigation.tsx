@@ -1,15 +1,15 @@
 import React from 'react';
 import {useRoute} from '@react-navigation/native';
-// import {NavigationContainer} from '@react-navigation/native';
-// import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Image} from 'react-native';
-import EventScreen from '../../Screens/EventScreen';
-import AllGamesScreen from '../../Screens/AllGamesScreen';
-import ProfileScreen from '../../Screens/ProfileScreen';
-import LiveScreen from '../../Screens/LiveScreen';
+import EventScreen from '../screens/EventScreen';
+import AllGamesScreen from '../screens/AllGamesScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import LiveScreen from '../screens/LiveScreen';
+import EventNavigation from './EventNavigation';
+import HomeNavigation from './CreateUserNavigation';
 
-// const Stack = createStackNavigator();
+
 const Bottom = createBottomTabNavigator();
 
 const HomeIcon = ({focused}: any) => {
@@ -17,8 +17,8 @@ const HomeIcon = ({focused}: any) => {
     <Image
       source={
         focused
-          ? require('../../Assets/Images/home_active.png')
-          : require('../../Assets/Images/homeInactive.png')
+          ? require('../assets/images/home_active.png')
+          : require('../assets/images/homeInactive.png')
       }
       style={{width: 24, height: 24}}
     />
@@ -30,8 +30,8 @@ const MenuIcon = ({focused}: any) => {
     <Image
       source={
         focused
-          ? require('../../Assets/Images/eventsActive.png')
-          : require('../../Assets/Images/Events_inactive.png')
+          ? require('../assets/images/eventsActive.png')
+          : require('../assets/images/Events_inactive.png')
       }
       style={{width: 24, height: 24}}
     />
@@ -43,8 +43,8 @@ const LiveIcon = ({focused}: any) => {
     <Image
       source={
         focused
-          ? require('../../Assets/Images/liveActive.png')
-          : require('../../Assets/Images/live_inactive.png')
+          ? require('../assets/images/liveActive.png')
+          : require('../assets/images/live_inactive.png')
       }
       style={{width: 24, height: 24}}
     />
@@ -56,8 +56,8 @@ const UserIcon = ({focused}: any) => {
     <Image
       source={
         focused
-          ? require('../../Assets/Images/profileActive.png')
-          : require('../../Assets/Images/profile_inactive.png')
+          ? require('../assets/images/profileActive.png')
+          : require('../assets/images/profile_inactive.png')
       }
       style={{width: 24, height: 24}}
     />
@@ -72,7 +72,7 @@ const BottomNavigation = () => {
     <Bottom.Navigator screenOptions={{headerShown: false}}>
       <Bottom.Screen
         name="Home"
-        component={AllGamesScreen}
+        component={HomeNavigation}
         options={{
           tabBarIcon: ({focused}) => <HomeIcon focused={focused} />,
           tabBarLabelStyle: {
@@ -83,7 +83,7 @@ const BottomNavigation = () => {
       />
       <Bottom.Screen
         name="Event"
-        component={EventScreen}
+        component={EventNavigation}
         options={{
           tabBarIcon: ({focused}) => <MenuIcon focused={focused} />,
           tabBarLabelStyle: {

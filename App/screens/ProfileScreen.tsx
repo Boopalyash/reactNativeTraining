@@ -1,4 +1,5 @@
-import React from 'react';
+import {useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,36 +9,37 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {Card} from 'react-native-elements';
+import {useSelector} from 'react-redux';
 
 const data = [
   {
     id: 1,
-    icon: require('../Assets/Images/Lock_Icon.png'),
+    icon: require('../assets/images/Lock_Icon.png'),
     title: 'Change Password',
   },
   {
     id: 2,
-    icon: require('../Assets/Images/Pricing_Icon.png'),
+    icon: require('../assets/images/Pricing_Icon.png'),
     title: 'Fan Pricing',
   },
   {
     id: 3,
-    icon: require('../Assets/Images/ContactSupport_Icon.png'),
+    icon: require('../assets/images/ContactSupport_Icon.png'),
     title: 'Contact Support',
   },
   {
     id: 4,
-    icon: require('../Assets/Images/QuestionMark_Icon.png'),
+    icon: require('../assets/images/QuestionMark_Icon.png'),
     title: 'Help Center',
   },
   {
     id: 5,
-    icon: require('../Assets/Images/settings_icon.png'),
+    icon: require('../assets/images/settings_icon.png'),
     title: 'League Settings',
   },
-  {id: 6, icon: require('../Assets/Images/Legal_Icon.png'), title: 'Legal'},
+  {id: 6, icon: require('../assets/images/Legal_Icon.png'), title: 'Legal'},
 ];
+
 const ListItem = ({item}: any) => {
   return (
     <View>
@@ -61,83 +63,88 @@ const ListItem = ({item}: any) => {
 };
 
 const ProfileScreen = ({navigation}: any) => {
+  const route = useRoute();
+  const gloversPostProfile = useSelector(
+    (state: any) => state.glover.gloverDetails.user,
+  );
+  console.log('Profile==============', gloversPostProfile);
+
+  const updatedData1 = route.params?.updatedData;
+
+  useEffect(() => {
+    if (updatedData1) {
+      console.log(
+        'Updated Data^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^:',
+        updatedData1,
+      );
+    }
+  }, [updatedData1]);
   const handlePress = () => {
-    navigation.navigate('Home');
+    navigation.navigate('SignIn');
   };
+
+  const handlePressPencil = () => {
+    navigation.navigate('EditProfile');
+  };
+
+  const handleAudio = () => {
+    navigation.navigate('ProfileAudio');
+  };
+
   return (
-    <View style={{backgroundColor: 'white'}}>
+    <View style={styles.ReturnView}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 40,
-          justifyContent: 'space-between',
-          paddingHorizontal: 30,
-        }}>
-        <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>
-          Profile
-        </Text>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity>
+      <View style={styles.ProfileBellView}>
+        <Text style={styles.ProfileText}>Profile</Text>
+        <View style={styles.NotificationBellView}>
+          <TouchableOpacity onPress={handleAudio}>
             <Image
-              source={require('../Assets/Images/notification_bell.png')}
+              source={require('../assets/images/notification_bell.png')}
               style={styles.Notification_bell}
             />
           </TouchableOpacity>
         </View>
       </View>
 
-      <View style={{alignItems: 'center'}}>
+      <View style={styles.ProfileIconView}>
         <Image
-          source={require('../Assets/Images/profileIcon.png')}
+          source={require('../assets/images/profileIcon.png')}
           style={styles.image}
         />
         <View style={styles.badge}>
           <TouchableOpacity>
             <View style={styles.cameraContainer}>
               <Image
-                source={require('../Assets/Images/Camera_Icon.png')}
+                source={require('../assets/images/Camera_Icon.png')}
                 style={styles.cameraIcon}
               />
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{flexDirection: 'row', marginTop: 20}}>
-          <Text style={styles.Nick}>Nick Williams</Text>
-          <TouchableOpacity>
+
+        <View style={styles.NameView}>
+          <Text style={styles.Nick}>
+            {updatedData1 === undefined
+              ? gloversPostProfile?.username
+              : updatedData1?.data?.username}
+          </Text>
+          <TouchableOpacity onPress={handlePressPencil}>
             <Image
-              source={require('../Assets/Images/Pencil_Icon.png')}
+              source={require('../assets/images/Pencil_Icon.png')}
               style={styles.Pencils}
             />
           </TouchableOpacity>
         </View>
+
         <View>
-          <Text style={{fontSize: 19, color: 'black'}}>
-            nickwilliams@gmail.com
-          </Text>
+          <Text style={styles.GmailText}>{gloversPostProfile?.email}</Text>
         </View>
-        <View
-          style={{
-            fontSize: 12,
-            marginTop: 10,
-            backgroundColor: 'rgba(128,128,128,0.2)',
-            borderRadius: 30,
-            width: 80,
-            height: 20,
-            fontWeight: 'bold',
-            marginBottom: 15,
-          }}>
-          <Text
-            style={{
-              color: '#2f77b6',
-              textAlign: 'center',
-              textAlignVertical: 'center',
-              marginTop: 2,
-            }}>
-            Staff
-          </Text>
+
+        <View style={styles.StaffView}>
+          <Text style={styles.StaffText}>{gloversPostProfile?.roles}</Text>
         </View>
       </View>
+
       <View style={styles.ProfileCard}>
         <FlatList
           data={data}
@@ -193,7 +200,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   lineStyle: {
-    borderWidth: 0.3,
+    borderWidth: 1,
     borderColor: '#e3e3e3',
     margin: 10,
   },
@@ -228,5 +235,58 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     marginLeft: 30,
+  },
+  StaffView: {
+    fontSize: 12,
+    marginTop: 10,
+    backgroundColor: 'rgba(128,128,128,0.2)',
+    borderRadius: 30,
+    width: 80,
+    height: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  StaffText: {
+    color: '#2f77b6',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    marginTop: 2,
+  },
+  GmailText: {
+    fontSize: 19,
+    color: 'black',
+  },
+  NameView: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  ProfileIconView: {
+    alignItems: 'center',
+  },
+  NotificationBellView: {
+    flexDirection: 'row',
+  },
+  ProfileText: {
+    color: 'black',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  ProfileBellView: {
+    flexDirection: 'row',
+    marginTop: 40,
+    justifyContent: 'space-between',
+    paddingHorizontal: 30,
+  },
+  ReturnView: {
+    backgroundColor: 'white',
+  },
+  FirstNameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  LastNameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
