@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,23 +6,26 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Dimensions,
 } from 'react-native';
-import {TextInput} from 'react-native-paper';
-import {useSelector} from 'react-redux';
-import {useGloversLoginPostMutation} from '../redux/service/GloversService';
+import { TextInput } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import { useGloversLoginPostMutation } from '../redux/service/GloversService';
 
-const SignInScreen = ({navigation}: any) => {
+const { width, height } = Dimensions.get('window');
+
+const SignInScreen = ({ navigation }: any) => {
   const gloversPostSignInMethod = useSelector(
     (state: any) => state.glover.gloversDetails,
   );
 
-  const [email, setEmail] = useState(gloversPostSignInMethod?.email);
-  const [password, setPassword] = useState(gloversPostSignInMethod?.password);
+  const [email, setEmail] = useState(gloversPostSignInMethod?.email || '');
+  const [password, setPassword] = useState(gloversPostSignInMethod?.password || '');
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const [gloversSign, {data, isSuccess, isLoading, error, isError}] =
+  const [gloversSign, { data, isSuccess, isLoading, error, isError }] =
     useGloversLoginPostMutation();
 
   const handleSignIn = async () => {
@@ -57,41 +60,34 @@ const SignInScreen = ({navigation}: any) => {
       return true;
     };
 
-    if (validateEmail() && validatePassword()) {
-      console.log('Email:', email);
-      console.log('Password:', password);
 
-      let gloversSignInReqObj = {
-        email: email,
-        password: password,
+
+    if (validateEmail() && validatePassword()) {
+      const gloversSignInReqObj = {
+        email,
+        password,
       };
 
-      console.log('triggerLoginAPI', gloversSignInReqObj);
-      const res = await gloversSign(gloversSignInReqObj).unwrap();
-      console.log('res---------->', res);
-      if (res.code === 0) {
-        navigation.navigate('Bottom');
-      } else {
-        Alert.alert(res.message);
+      try {
+        const res = await gloversSign(gloversSignInReqObj).unwrap();
+        if (res.code === 0) {
+          navigation.navigate('Bottom');
+        } else {
+          Alert.alert(res.message);
+        }
+      } catch (err) {
+        console.error(err);
+        Alert.alert('Error', 'Something went wrong. Please try again.');
       }
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(prevShowPassword => !prevShowPassword);
-  };
-
-  const handleForgotPassword = () => {
-    console.log('Forgot Password clicked');
-  };
-
-  const handleSignUp = () => {
-    console.log('Sign Up clicked');
-    navigation.navigate('SignUp');
-  };
-
   const handleFan = () => {
     console.log('Log as fan clicked');
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(prevShowPassword => !prevShowPassword);
   };
 
   return (
@@ -100,7 +96,9 @@ const SignInScreen = ({navigation}: any) => {
         source={require('../assets/images/gloverslogo.png')}
         style={styles.logo}
       />
-      <Text style={styles.GloversText}>Get started with Glover's</Text>
+      <View style={{ alignSelf: 'flex-start' }}>
+        <Text style={styles.gloversText}>Get started with Glover's</Text>
+      </View>
       <TextInput
         style={styles.inputText}
         mode="outlined"
@@ -108,9 +106,7 @@ const SignInScreen = ({navigation}: any) => {
         placeholder="Enter Your Email Address"
         theme={{
           roundness: 30,
-          colors: {
-            primary: 'black',
-          },
+          colors: { primary: 'black' },
         }}
         onChangeText={text => setEmail(text.toLowerCase())}
         value={email}
@@ -131,19 +127,14 @@ const SignInScreen = ({navigation}: any) => {
         }
         theme={{
           roundness: 30,
-          colors: {
-            primary: 'black',
-          },
+          colors: { primary: 'black' },
         }}
         onChangeText={text => setPassword(text)}
         value={password}
       />
+      {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-      {passwordError ? (
-        <Text style={styles.errorText}>{passwordError}</Text>
-      ) : null}
-
-      <TouchableOpacity onPress={handleForgotPassword}>
+      <TouchableOpacity onPress={() => Alert.alert('Forgot Password')}>
         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
 
@@ -151,10 +142,10 @@ const SignInScreen = ({navigation}: any) => {
         <Text style={styles.signInButtonText}>SIGN IN</Text>
       </TouchableOpacity>
 
-      <View style={styles.DontView}>
-        <Text style={styles.DontText}>Don't have an account?</Text>
-        <TouchableOpacity onPress={handleSignUp}>
-          <Text style={styles.DontSignText}>Sign Up</Text>
+      <View style={styles.dontView}>
+        <Text style={styles.dontText}>Don't have an account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+          <Text style={styles.dontSignText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
 
@@ -181,12 +172,12 @@ const SignInScreen = ({navigation}: any) => {
 
       <View style={styles.PolicyView}>
         <View>
-          <Text style={{fontSize: 16}}>Glover's</Text>
+          <Text style={{ fontSize: 16 }}>Glover's</Text>
         </View>
         <TouchableOpacity onPress={() => Alert.alert('Terms of Service')}>
           <Text style={styles.TermsText}>Terms of Service</Text>
         </TouchableOpacity>
-        <Text style={{fontSize: 16}}>and</Text>
+        <Text style={{ fontSize: 16 }}>and</Text>
         <TouchableOpacity onPress={() => Alert.alert('Privacy Policy')}>
           <Text style={styles.TermsText}>Privacy Policy</Text>
         </TouchableOpacity>
@@ -194,65 +185,65 @@ const SignInScreen = ({navigation}: any) => {
     </View>
   );
 };
-export default SignInScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: '5%',
     backgroundColor: 'white',
   },
   logo: {
-    width: 300,
-    height: 150,
+    width: '80%',
+    height: height * 0.2,
     resizeMode: 'contain',
-    marginLeft: 50,
-    marginTop: 60,
+    alignSelf: 'center',
+    marginTop: height * 0.05,
   },
-  GloversText: {
+  gloversText: {
     fontSize: 20,
-    marginLeft: 30,
-    fontWeight: 500,
-    marginTop: 20,
+    textAlign: 'center',
+    marginVertical: 10,
+    fontWeight: '500',
   },
   inputText: {
-    width: '85%',
-    height: 55,
-    paddingHorizontal: 10,
-    alignSelf: 'center',
-    marginTop: 20,
+    marginTop: 15,
   },
   forgotPasswordText: {
     color: '#0963ae',
-    marginTop: 20,
-    marginLeft: 240,
-    fontSize: 18,
+    marginTop: 10,
+    textAlign: 'right',
+    fontSize: 14,
   },
   signInButton: {
     backgroundColor: '#005dab',
     paddingVertical: 15,
-    width: '85%',
-    alignSelf: 'center',
     borderRadius: 30,
     marginTop: 20,
+    alignItems: 'center',
   },
   signInButtonText: {
     color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  DontView: {
+  dontView: {
     flexDirection: 'row',
-    marginTop: 30,
-    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
-  DontText: {
-    fontSize: 16,
+  dontText: {
+    fontSize: 14,
   },
-  DontSignText: {
-    fontSize: 16,
+  dontSignText: {
+    fontSize: 14,
     color: '#005dab',
-    left: 5,
+    marginLeft: 5,
     textDecorationLine: 'underline',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
   },
   LogText: {
     alignSelf: 'center',
@@ -263,16 +254,16 @@ const styles = StyleSheet.create({
   },
   LogWith: {
     alignSelf: 'center',
-    marginTop: 40,
+    marginTop: 20,
     fontSize: 16,
     fontWeight: 500,
   },
-
   icon: {
     width: 50,
     height: 50,
     marginLeft: 10,
     marginRight: 10,
+    resizeMode:'contain',
     marginBottom: 30,
   },
   PolicyView: {
@@ -290,53 +281,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     marginTop: 20,
-    marginBottom: 20,
-  },
-  dropdownContainer: {
-    height: 40,
-    marginTop: 10,
-  },
-  dropdownStyle: {
-    backgroundColor: '#fafafa',
-  },
-  dropdownItemStyle: {
-    justifyContent: 'flex-start',
-  },
-  dropdownMenuStyle: {
-    backgroundColor: '#fafafa',
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-    alignSelf: 'center',
-  },
-  inputContainer: {
-    width: '80%',
-    backgroundColor: '#465881',
-    borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
-    justifyContent: 'center',
-    alignSelf: 'center',
-    padding: 20,
-    borderWidth: 1,
-    margin: 35,
-    borderColor: 'white',
-  },
-  inputText1: {
-    fontSize: 16,
-    paddingLeft: 20,
-    marginHorizontal: 20,
-  },
-
-  inputIcon: {
-    position: 'absolute',
-    top: 10,
-    left: 20,
-  },
-  btnEye: {
-    position: 'absolute',
-    right: 25,
-    top: 12,
   },
 });
+
+export default SignInScreen;

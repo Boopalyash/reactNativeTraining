@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,12 +6,16 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Dimensions,
+  ScrollView,
 } from 'react-native';
-import {TextInput, List, Card, Divider} from 'react-native-paper';
-import {useSelector} from 'react-redux';
-import {useGloversNewUserPostMutation} from '../redux/service/GloversService';
+import { TextInput, List, Card, Divider } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import { useGloversNewUserPostMutation } from '../redux/service/GloversService';
 
-const SignUpScreen = ({navigation}: any) => {
+const { width, height } = Dimensions.get('window');
+
+const SignUpScreen = ({ navigation }: any) => {
   const gloversPostMethod = useSelector(
     (state: any) => state.glover.gloversDetails,
   );
@@ -30,7 +34,7 @@ const SignUpScreen = ({navigation}: any) => {
   const [lastNameError, setLastNameError] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  const [glovers, {data, isSuccess, isLoading, error, isError}] =
+  const [glovers, { data, isSuccess, isLoading, error, isError }] =
     useGloversNewUserPostMutation();
 
   const handleSignUp = () => {
@@ -110,7 +114,7 @@ const SignUpScreen = ({navigation}: any) => {
     setDropdownVisible(false);
   };
 
-  const handleOptionSelect = ({option}: any) => {
+  const handleOptionSelect = ({ option }: any) => {
     setInputValue(option);
     closeDropdown();
   };
@@ -138,246 +142,238 @@ const SignUpScreen = ({navigation}: any) => {
     }
   };
 
-
-
   return (
     <View style={styles.container}>
       <Image
         source={require('../assets/images/gloverslogo.png')}
         style={styles.logo}
       />
-      <Text style={styles.GloversText}>Get started with Glover's</Text>
-
-      <TextInput
-        style={styles.inputText}
-        mode="outlined"
-        label="First Name"
-        value={firstName}
-        onChangeText={text => {
-          setFirstName(text);
-          setFirstNameError('');
-        }}
-        placeholder="Enter Your First Name"
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-      {firstNameError ? (
-        <Text style={styles.errorText}>{firstNameError}</Text>
-      ) : null}
-
-      <TextInput
-        style={styles.inputText}
-        mode="outlined"
-        label="Last Name"
-        value={lastName}
-        onChangeText={text => {
-          setLastName(text);
-          setLastNameError('');
-        }}
-        placeholder="Enter Your Last Name"
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-      {lastNameError ? (
-        <Text style={styles.errorText}>{lastNameError}</Text>
-      ) : null}
-
-      <TextInput
-        style={styles.inputText}
-        mode="outlined"
-        label="Email Address"
-        value={email}
-        onChangeText={handleEmailChange}
-        placeholder="Enter Your Email Address"
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-
-      <TextInput
-        style={styles.inputText}
-        label="Input Text"
-        value={inputValue}
-        onChangeText={text => setInputValue(text)}
-        mode="outlined"
-        onFocus={openDropdown}
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-
-      {dropdownVisible && (
-        <View style={styles.dropdownContainer}>
-          <Card elevation={4}>
-            <List.Section>
-              {options.map((option, index) => (
-                <React.Fragment key={index}>
-                  <List.Item
-                    title={option}
-                    onPress={() => {
-                      handleOptionSelect(option);
-                      setInputValue(option);
-                      closeDropdown();
-                    }}
-                  />
-                  {index !== options.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
-            </List.Section>
-          </Card>
+      <ScrollView showsHorizontalScrollIndicator={false}
+        horizontal={false} >
+        <View style={{ alignSelf: 'flex-start' }}>
+          <Text style={styles.GloversText}>Get started with Glover's</Text>
         </View>
-      )}
 
-      <TextInput
-        style={styles.inputText}
-        mode="outlined"
-        label="Password"
-        placeholder="Enter your password"
-        secureTextEntry={!showPassword}
-        value={password}
-        onChangeText={text => setPassword(text)}
-        onBlur={validatePassword}
-        right={
-          <TextInput.Icon
-            name={showPassword ? 'eye-off' : 'eye'}
-            onPress={togglePasswordVisibility}
-          />
-        }
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-      {passwordError ? (
-        <Text style={styles.errorText}>{passwordError}</Text>
-      ) : null}
+        <TextInput
+          style={styles.inputText}
+          mode="outlined"
+          label="First Name"
+          value={firstName}
+          onChangeText={text => {
+            setFirstName(text);
+            setFirstNameError('');
+          }}
+          placeholder="Enter Your First Name"
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+        {firstNameError ? (
+          <Text style={styles.errorText}>{firstNameError}</Text>
+        ) : null}
 
-      <TextInput
-        style={styles.inputText}
-        mode="outlined"
-        label="Confirm Password"
-        placeholder="Confirm Password"
-        secureTextEntry={!showPassword}
-        value={confirmPassword}
-        onChangeText={text => setConfirmPassword(text)}
-        onBlur={validatePassword}
-        right={
-          <TextInput.Icon
-            name={showPassword ? 'eye-off' : 'eye'}
-            onPress={togglePasswordVisibility}
-          />
-        }
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-      {password !== confirmPassword && (
-        <Text style={styles.errorText}>Incorrect Password</Text>
-      )}
+        <TextInput
+          style={styles.inputText}
+          mode="outlined"
+          label="Last Name"
+          value={lastName}
+          onChangeText={text => {
+            setLastName(text);
+            setLastNameError('');
+          }}
+          placeholder="Enter Your Last Name"
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+        {lastNameError ? (
+          <Text style={styles.errorText}>{lastNameError}</Text>
+        ) : null}
 
-      <Text style={styles.AgreeText}>
-        By signing up you agree to the Glover's
-      </Text>
-      <View style={styles.PolicyView}>
-        <TouchableOpacity onPress={() => Alert.alert('Terms of Service')}>
-          <Text style={styles.TermsText}>Terms of Service</Text>
+        <TextInput
+          style={styles.inputText}
+          mode="outlined"
+          label="Email Address"
+          value={email}
+          onChangeText={handleEmailChange}
+          placeholder="Enter Your Email Address"
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
+        <TextInput
+          style={styles.inputText}
+          label="Input Text"
+          value={inputValue}
+          onChangeText={text => setInputValue(text)}
+          mode="outlined"
+          onFocus={openDropdown}
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+
+        {dropdownVisible && (
+          <View style={styles.dropdownContainer}>
+            <Card elevation={4}>
+              <List.Section>
+                {options.map((option, index) => (
+                  <React.Fragment key={index}>
+                    <List.Item
+                      title={option}
+                      onPress={() => {
+                        handleOptionSelect(option);
+                        setInputValue(option);
+                        closeDropdown();
+                      }}
+                    />
+                    {index !== options.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
+              </List.Section>
+            </Card>
+          </View>
+        )}
+
+        <TextInput
+          style={styles.inputText}
+          mode="outlined"
+          label="Password"
+          placeholder="Enter your password"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={text => setPassword(text)}
+          onBlur={validatePassword}
+          right={
+            <TextInput.Icon
+              name={showPassword ? 'eye-off' : 'eye'}
+              onPress={togglePasswordVisibility}
+            />
+          }
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+        {passwordError ? (
+          <Text style={styles.errorText}>{passwordError}</Text>
+        ) : null}
+
+        <TextInput
+          style={styles.inputText}
+          mode="outlined"
+          label="Confirm Password"
+          placeholder="Confirm Password"
+          secureTextEntry={!showPassword}
+          value={confirmPassword}
+          onChangeText={text => setConfirmPassword(text)}
+          onBlur={validatePassword}
+          right={
+            <TextInput.Icon
+              name={showPassword ? 'eye-off' : 'eye'}
+              onPress={togglePasswordVisibility}
+            />
+          }
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+        {password !== confirmPassword && (
+          <Text style={styles.errorText}>Incorrect Password</Text>
+        )}
+
+        <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+          <Text style={styles.signUpButtonText}>Sign Up</Text>
         </TouchableOpacity>
-        <Text style={{fontSize: 16}}>and</Text>
-        <TouchableOpacity onPress={() => Alert.alert('Privacy Policy')}>
-          <Text style={styles.TermsText}>Privacy Policy</Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-        <Text style={styles.signUpButtonText}>SIGN UP</Text>
-      </TouchableOpacity>
-    </View>
+
+        <Text style={styles.signInText}>
+          Already have an account?{' '}
+          <Text
+            style={styles.signInLink}
+            onPress={() => navigation.navigate('SignIn')}>
+            Sign In
+          </Text>
+        </Text>
+      </ScrollView>
+    </View >
   );
 };
 
-export default SignUpScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: width * 0.05, // Adjusting padding based on screen width
     backgroundColor: 'white',
   },
   logo: {
-    width: 300,
-    height: 80,
+    width: width * 0.6, // Adjusting logo width based on screen size
+    height: width * 0.4, // Adjusting logo height based on screen size
     resizeMode: 'contain',
-    marginLeft: 50,
-    marginTop: 60,
   },
   GloversText: {
-    fontSize: 25,
-    marginLeft: 30,
-    fontWeight: 500,
-    marginTop: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: height * 0.02, // Adjusting margin based on screen height
   },
   inputText: {
-    width: '85%',
-    height: 55,
-    paddingHorizontal: 10,
-    alignSelf: 'center',
-    marginTop: 20,
+    width: width * 0.9, // Making input fields responsive
+    marginVertical: height * 0.02, // Adjusting spacing based on screen height
   },
-  AgreeText: {
-    fontSize: 18,
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-  PolicyView: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-  },
-  TermsText: {
-    color: '#005dab',
-    marginLeft: 5,
-    marginRight: 5,
-    textDecorationLine: 'underline',
-    fontSize: 16,
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginVertical: 5,
+    marginLeft: 10,
   },
   signUpButton: {
-    backgroundColor: '#005dab',
-    paddingVertical: 15,
-    width: '85%',
-    alignSelf: 'center',
+    backgroundColor: 'black',
+    width: width * 0.9,
+    padding: height * 0.02,
+    marginTop: height * 0.03,
+    alignItems: 'center',
     borderRadius: 30,
-    marginTop: 20,
   },
   signUpButtonText: {
     color: 'white',
     fontSize: 18,
-    textAlign: 'center',
     fontWeight: 'bold',
   },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-    alignSelf: 'center',
+  signInText: {
+    marginTop: height * 0.02,
+    fontSize: 16,
+    alignSelf:'center'
+  },
+  signInLink: {
+    color: 'blue',
+    fontWeight: 'bold',
   },
   dropdownContainer: {
-    alignSelf: 'center',
-    width: '80%',
-    marginTop: 10,
+    position: 'absolute',
+    top: 100, // Adjust position of the dropdown
+    width: '100%',
+    zIndex: 1,
   },
 });
+
+export default SignUpScreen;
