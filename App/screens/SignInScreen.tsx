@@ -174,11 +174,11 @@ const SignInScreen = ({ navigation }: any) => {
         <View>
           <Text style={{ fontSize: 16 }}>Glover's</Text>
         </View>
-        <TouchableOpacity onPress={() => Alert.alert('Terms of Service')}>
+        <TouchableOpacity onPress={() => navigation.navigate('TermsAndService')}>
           <Text style={styles.TermsText}>Terms of Service</Text>
         </TouchableOpacity>
         <Text style={{ fontSize: 16 }}>and</Text>
-        <TouchableOpacity onPress={() => Alert.alert('Privacy Policy')}>
+        <TouchableOpacity onPress={() => navigation.navigate('PrivacyPolicy')}>
           <Text style={styles.TermsText}>Privacy Policy</Text>
         </TouchableOpacity>
       </View>

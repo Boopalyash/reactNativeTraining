@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute',
-    top: 100, // Adjust position of the dropdown
+    top: 100, 
     width: '100%',
     zIndex: 1,
   },
