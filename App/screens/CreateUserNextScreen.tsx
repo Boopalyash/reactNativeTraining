@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,17 +6,19 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  FlatList,
+  Dimensions,
 } from 'react-native';
-import {TextInput, Card, List, Divider} from 'react-native-paper';
-import {useSelector} from 'react-redux';
-import {useLazyGloversCreateTeamNextGetQuery} from '../redux/service/GloversService';
+import { TextInput, Card, List, Divider } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import { useLazyGloversCreateTeamNextGetQuery } from '../redux/service/GloversService';
 
-const CreateUserNextScreen = ({navigation}: any) => {
+const { width, height } = Dimensions.get('window'); 
+
+const CreateUserNextScreen = ({ navigation }: any) => {
   const [inputValue, setInputValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [activeButton, setActiveButton] = useState('back');
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState<string[]>([]);
 
   const [gloverCreateteamNext] = useLazyGloversCreateTeamNextGetQuery();
 
@@ -37,17 +39,24 @@ const CreateUserNextScreen = ({navigation}: any) => {
 
   const openDropdown = () => {
     setDropdownVisible(true);
-    const apiOptions = gloversGetCreateTeam?.data?.Season.map(
-      season => season.values,
-    );
-    setOptions(apiOptions);
+
+    // Static data for dropdown options
+    const staticOptions = [
+      'Spring 2024',
+      'Summer 2024',
+      'Fall 2024',
+      'Winter 2024',
+      'Spring 2025',
+    ];
+
+    setOptions(staticOptions);
   };
 
   const closeDropdown = () => {
     setDropdownVisible(false);
   };
 
-  const handleOptionSelect = ({option}: any) => {
+  const handleOptionSelect = (option: string) => {
     setInputValue(option);
     closeDropdown();
   };
@@ -72,11 +81,7 @@ const CreateUserNextScreen = ({navigation}: any) => {
         </TouchableOpacity>
         <Text style={styles.CreateText}>Create Your Team</Text>
       </View>
-      <View>
-        <Text style={styles.SelectText1}>
-          What is the name of your local league?
-        </Text>
-      </View>
+      <Text style={styles.SelectText1}>What is the name of your local league?</Text>
       <TextInput
         style={styles.inputText}
         mode="outlined"
@@ -89,14 +94,11 @@ const CreateUserNextScreen = ({navigation}: any) => {
           },
         }}
       />
-
-      <View>
-        <Text style={styles.SelectText1}>Where is your team based?</Text>
-      </View>
+      <Text style={styles.SelectText1}>Where is your team based?</Text>
       <TextInput
         style={styles.inputText}
         mode="outlined"
-        label="City,Town"
+        label="City, Town"
         placeholder="Name"
         theme={{
           roundness: 30,
@@ -105,10 +107,7 @@ const CreateUserNextScreen = ({navigation}: any) => {
           },
         }}
       />
-
-      <View>
-        <Text style={styles.SelectText1}>What is your team's name?</Text>
-      </View>
+      <Text style={styles.SelectText1}>What is your team's name?</Text>
       <TextInput
         style={styles.inputText}
         mode="outlined"
@@ -121,54 +120,44 @@ const CreateUserNextScreen = ({navigation}: any) => {
           },
         }}
       />
-
-      <View>
-        <Text style={styles.SelectText1}>When is the upcoming season?</Text>
+      <Text style={styles.SelectText1}>When is the upcoming season?</Text>
+      <View style={styles.inputWithDropdownContainer}>
+        <TextInput
+          style={styles.inputText}
+          label="Select Season"
+          value={inputValue}
+          onChangeText={(text) => setInputValue(text)}
+          mode="outlined"
+          onFocus={openDropdown}
+          onBlur={closeDropdown}
+          theme={{
+            roundness: 30,
+            colors: {
+              primary: 'black',
+            },
+          }}
+        />
+        {dropdownVisible && (
+          <View style={styles.dropdownContainer}>
+            <Card elevation={4}>
+              <ScrollView>
+                <List.Section>
+                  {options.map((option, index) => (
+                    <React.Fragment key={index}>
+                      <List.Item
+                        title={option}
+                        onPress={() => handleOptionSelect(option)}
+                      />
+                      {index !== options.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List.Section>
+              </ScrollView>
+            </Card>
+          </View>
+        )}
       </View>
-
-      <TextInput
-        style={styles.inputText}
-        label="Input Text"
-        value={inputValue}
-        onChangeText={text => setInputValue(text)}
-        mode="outlined"
-        onFocus={openDropdown}
-        theme={{
-          roundness: 30,
-          colors: {
-            primary: 'black',
-          },
-        }}
-      />
-
-      {dropdownVisible && (
-        <View style={styles.dropdownContainer}>
-          <Card elevation={4}>
-            <ScrollView>
-              <List.Section>
-                {options.map((option, index) => (
-                  <React.Fragment key={index}>
-                    <List.Item
-                      title={option}
-                      onPress={() => {
-                        handleOptionSelect(option);
-                        setInputValue(option);
-                        closeDropdown();
-                      }}
-                    />
-                    {index !== options.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List.Section>
-            </ScrollView>
-          </Card>
-        </View>
-      )}
-
-      <View>
-        <Text style={styles.SelectText1}>Upload your team logo?</Text>
-      </View>
-
+      <Text style={styles.SelectText1}>Upload your team logo?</Text>
       <TouchableOpacity>
         <View style={styles.UploadButton}>
           <View style={styles.RowContainer}>
@@ -180,124 +169,124 @@ const CreateUserNextScreen = ({navigation}: any) => {
           </View>
         </View>
       </TouchableOpacity>
-
-      <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-        <View>
-          <TouchableOpacity onPress={handleBackButtonPress}>
-            <View
-              style={[
-                styles.BackButton,
-                activeButton === 'back' && styles.ActiveButton,
-              ]}>
-              <Text style={styles.BackText}>BACK</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity onPress={handleFinishButtonPress}>
-            <View
-              style={[
-                styles.FinishButton,
-                activeButton === 'finish' && styles.ActiveButton,
-              ]}>
-              <Text style={styles.FinishText}>FINISH</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.ButtonContainer}>
+        <TouchableOpacity onPress={handleBackButtonPress}>
+          <View style={[styles.BackButton, activeButton === 'back' && styles.ActiveButton]}>
+            <Text style={styles.BackText}>BACK</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleFinishButtonPress}>
+          <View
+            style={[styles.FinishButton, activeButton === 'finish' && styles.ActiveButton]}
+          >
+            <Text style={styles.FinishText}>FINISH</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
+
 export default CreateUserNextScreen;
+
 const styles = StyleSheet.create({
   Container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: 'white',
   },
   ChevronLeftView: {
     flexDirection: 'row',
-    marginTop: 60,
-    marginLeft: 20,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    alignItems: 'center',
   },
   ChevronLeft: {
-    width: 15,
-    height: 25,
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
   CreateText: {
-    fontSize: 22,
-    left: 35,
+    fontSize: width * 0.06,
+    marginLeft: width * 0.03,
     fontWeight: '600',
   },
   SelectText1: {
-    fontSize: 20,
-    marginLeft: 20,
-    marginTop: 30,
+    fontSize: width * 0.05,
+    marginHorizontal: width * 0.05,
+    marginTop: height * 0.03,
     fontWeight: '400',
+  },
+  inputWithDropdownContainer: {
+    width: '100%',
+    alignSelf: 'center',
+    marginTop: height * 0.02,
   },
   inputText: {
     width: '90%',
-    height: 55,
-    paddingHorizontal: 10,
     alignSelf: 'center',
-    marginTop: 20,
   },
   dropdownContainer: {
-    alignSelf: 'center',
-    width: '80%',
-    marginTop: 10,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignSelf: 'center'
   },
   RowContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-evenly',
   },
   UploadButton: {
-    width: 120,
-    height: 40,
-    marginLeft: 20,
+    width: width * 0.3,
+    height: height * 0.06,
     borderRadius: 30,
     backgroundColor: '#035dab',
-    marginTop: 10,
-    paddingVertical: 10,
-  },
-  UploadText: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: 'white',
-    alignSelf: 'center',
+    marginLeft:20,
+    marginTop: height * 0.02,
+    justifyContent: 'space-evenly',
   },
   UploadIcon: {
-    width: 20,
-    height: 20,
+    width: width * 0.05,
+    height: height * 0.05,
     tintColor: 'white',
+    resizeMode: 'contain',
+  },
+  UploadText: {
+    color: 'white',
+    fontSize: width * 0.035,
+    fontWeight: 'bold',
+  },
+  ButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: height * 0.03,
+    paddingBottom: 50,
   },
   BackButton: {
     borderRadius: 30,
     backgroundColor: '#035dab',
-    marginTop: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.08,
   },
   BackText: {
-    fontSize: 15,
-    fontWeight: 'bold',
     color: 'white',
+    fontSize: width * 0.04,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   FinishButton: {
     borderRadius: 30,
     backgroundColor: '#035dab',
-    marginTop: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.08,
   },
   FinishText: {
-    fontSize: 15,
-    fontWeight: 'bold',
     color: 'white',
+    fontSize: width * 0.04,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   ActiveButton: {
     backgroundColor: '#cecece',
-  },
-  containers: {
-    paddingHorizontal: 10,
   },
 });

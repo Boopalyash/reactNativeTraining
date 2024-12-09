@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
   notificationBell: {
     width: 20,
     height: 20,
+    margin:10,
     resizeMode:'contain'
   },
   profileContainer: {

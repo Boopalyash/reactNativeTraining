@@ -168,7 +168,7 @@ const AllGamesScreen = ({navigation}: any) => {
           keyExtractor={item => item?._id}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={<SectionHeader title="Today" />}
-          contentContainerStyle={styles.contentContainer}
+          // contentContainerStyle={styles.contentContainer}
         />
       </View>
     );
@@ -177,7 +177,7 @@ const AllGamesScreen = ({navigation}: any) => {
   const renderMyTeamsScreen = () => {
     const flatListData = gloversGetMyTeams?.data || [];
 
-    const groupedData: any = flatListData.reduce((acc, item) => {
+    const groupedData: any = flatListData.reduce((acc: { [x: string]: any[]; }, item: { season_name: string | number; }) => {
       if (!acc[item.season_name]) {
         acc[item.season_name] = [];
       }
@@ -187,7 +187,7 @@ const AllGamesScreen = ({navigation}: any) => {
 
     return (
       <View style={{flex: 1}}>
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView>
           {Object.entries(groupedData).map(([title, data]) => (
             <View key={title}>
               <Text style={styles.titleText}>{title}</Text>
@@ -258,20 +258,32 @@ export default AllGamesScreen;
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 1,
-    flex: 1,
     backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 40
   },
-  contentContainer: {
-    paddingBottom: 300,
+  // contentContainer: {
+  //   paddingBottom: 300,
+  // },
+  HomeView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  HomeText: {
+    color: 'black',
+    fontSize: 25,
+    fontWeight: 'bold',
   },
   Search: {
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
+    resizeMode:'contain',
     margin: 10,
   },
   Notification_bell: {
-    width: 15,
-    height: 18,
+    width: 20,
+    height: 20,
+    resizeMode:'contain',
     margin: 10,
   },
   imageContainer: {
@@ -283,10 +295,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 50,
     height: 50,
+    resizeMode:'contain',
   },
   Ball: {
     width: 30,
     height: 30,
+    resizeMode:'contain',
     tintColor: 'white',
   },
   Location: {
@@ -300,16 +314,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 20,
     marginRight: 10,
-    marginLeft: 10,
+    // marginLeft: 10,
     fontWeight: 'bold',
   },
   Document: {
     width: 15,
     height: 18,
+    resizeMode:'contain',
   },
   tabContainer: {
-    height: 45,
-    width: 250,
+    // height: 45,
+    // width: 250,
     alignSelf: 'center',
     marginTop: 10,
     marginBottom: 10,
@@ -342,11 +357,13 @@ const styles = StyleSheet.create({
   SmallIcon: {
     width: 15,
     height: 15,
+    resizeMode:'contain',
     marginLeft: 40,
   },
   SmallIcon1: {
     width: 15,
     height: 15,
+    resizeMode:'contain',
     marginLeft: 40,
   },
   SquareContainers: {
@@ -355,6 +372,7 @@ const styles = StyleSheet.create({
   square: {
     width: 13,
     height: 13,
+    resizeMode:'contain',
     backgroundColor: '#99bfdd',
     marginTop: 12,
     transform: [{rotate: '45deg'}],
@@ -362,6 +380,7 @@ const styles = StyleSheet.create({
   square1: {
     width: 13,
     height: 13,
+    resizeMode:'contain',
     backgroundColor: '#99bfdd',
     transform: [{rotate: '45deg'}],
   },
@@ -377,17 +396,20 @@ const styles = StyleSheet.create({
   Ball1: {
     width: 30,
     height: 30,
+    resizeMode:'contain',
     tintColor: 'white',
   },
   RedProfile: {
     width: 20,
     height: 20,
+    resizeMode:'contain',
     marginTop: 10,
     marginLeft: 10,
   },
   RoundAdd: {
     width: 50,
     height: 50,
+    resizeMode:'contain',
     marginBottom: 10,
   },
   Cards: {
@@ -501,17 +523,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
   },
-  HomeView: {
-    flexDirection: 'row',
-    marginTop: 40,
-    justifyContent: 'space-between',
-    paddingHorizontal: 30,
-  },
-  HomeText: {
-    color: 'black',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
+
   RoundAddView: {
     position: 'absolute',
     bottom: 10,

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,15 +7,33 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const HomeScreen = ({navigation}: any) => {
+const HomeScreen = ({ navigation }: any) => {
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     navigation.navigate('SignIn');
+  //   }, 3000);
+
+  //   return () => clearTimeout(timer);
+  // });
+
+  
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate('SignIn');
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  });
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        const parsedToken = JSON.parse(token);
+        console.log('Token exists:', parsedToken.access_token);
+        navigation.navigate('BottomTabs');
+      } else {
+        navigation.navigate('SignIn');
+      }
+    };
+  
+    checkToken();
+  }, [navigation]);
+  
 
   return (
     <View style={styles.Container}>

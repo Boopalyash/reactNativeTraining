@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,10 +15,10 @@ import { useGloversLoginPostMutation } from '../redux/service/GloversService';
 const { width, height } = Dimensions.get('window');
 
 const SignInScreen = ({ navigation }: any) => {
+  const passwordRef = useRef(null);
   const gloversPostSignInMethod = useSelector(
     (state: any) => state.glover.gloversDetails,
   );
-
   const [email, setEmail] = useState(gloversPostSignInMethod?.email || '');
   const [password, setPassword] = useState(gloversPostSignInMethod?.password || '');
   const [showPassword, setShowPassword] = useState(false);
@@ -110,6 +110,9 @@ const SignInScreen = ({ navigation }: any) => {
         }}
         onChangeText={text => setEmail(text.toLowerCase())}
         value={email}
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => passwordRef.current?.focus()}
       />
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
@@ -131,6 +134,9 @@ const SignInScreen = ({ navigation }: any) => {
         }}
         onChangeText={text => setPassword(text)}
         value={password}
+        returnKeyType="done"
+        ref={passwordRef}
+        onSubmitEditing={handleSignIn}
       />
       {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
@@ -263,7 +269,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginLeft: 10,
     marginRight: 10,
-    resizeMode:'contain',
+    resizeMode: 'contain',
     marginBottom: 30,
   },
   PolicyView: {

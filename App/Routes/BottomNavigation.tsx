@@ -20,7 +20,7 @@ const HomeIcon = ({focused}: any) => {
           ? require('../assets/images/home_active.png')
           : require('../assets/images/homeInactive.png')
       }
-      style={{width: 24, height: 24}}
+      style={{width: 24, height: 24,resizeMode:'contain'}}
     />
   );
 };
@@ -33,7 +33,7 @@ const MenuIcon = ({focused}: any) => {
           ? require('../assets/images/eventsActive.png')
           : require('../assets/images/Events_inactive.png')
       }
-      style={{width: 24, height: 24}}
+      style={{width: 24, height: 24,resizeMode:'contain'}}
     />
   );
 };
@@ -46,7 +46,7 @@ const LiveIcon = ({focused}: any) => {
           ? require('../assets/images/liveActive.png')
           : require('../assets/images/live_inactive.png')
       }
-      style={{width: 24, height: 24}}
+      style={{width: 24, height: 24,resizeMode:'contain'}}
     />
   );
 };
@@ -59,7 +59,7 @@ const UserIcon = ({focused}: any) => {
           ? require('../assets/images/profileActive.png')
           : require('../assets/images/profile_inactive.png')
       }
-      style={{width: 24, height: 24}}
+      style={{width: 24, height: 24,resizeMode:'contain'}}
     />
   );
 };

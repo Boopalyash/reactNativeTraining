@@ -7,10 +7,13 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {useLazyGloversEventGetQuery} from '../redux/service/GloversService';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+
+const {width} = Dimensions.get('window'); // Get device width for responsive sizing
 
 const renderItem = ({item}: any) => {
   const createdAt = moment(item?.created_at);
@@ -18,45 +21,41 @@ const renderItem = ({item}: any) => {
   const formattedDate = createdAt.format('DD');
 
   return (
-    <View style={styles.RenderView}>
-      <View style={styles.DayTimeOverallView}>
-        <View style={styles.DayTimeView}>
-          <Text style={styles.DayText}>{formattedDay}</Text>
-          <Text style={styles.DateText}>{formattedDate}</Text>
+    <View style={styles.renderView}>
+      <View style={styles.dayTimeOverallView}>
+        <View style={styles.dayTimeView}>
+          <Text style={styles.dayText}>{formattedDay}</Text>
+          <Text style={styles.dateText}>{formattedDate}</Text>
         </View>
 
-        <View style={styles.TitleView}>
-          <Text style={styles.TitleText}>{item?.game_status}</Text>
-          <View style={styles.TimeDeleteView}>
-            <Text style={styles.TimeText}>
+        <View style={styles.titleView}>
+          <Text style={styles.titleText}>{item?.game_status}</Text>
+          <View style={styles.timeDeleteView}>
+            <Text style={styles.timeText}>
               {item?.playing_team_score}-{item?.opponent_team_score}
             </Text>
             <TouchableOpacity>
               <Image
                 source={require('../assets/images/delete-circle.png')}
-                style={styles.Delete}
+                style={styles.delete}
               />
             </TouchableOpacity>
           </View>
         </View>
       </View>
 
-      <View style={styles.SmallIconView}>
+      <View style={styles.smallIconView}>
         <Image
           source={require('../assets/images/yankeesLogo.png')}
-          style={styles.SmallIcon}
+          style={styles.smallIcon}
         />
-        <Text style={styles.Team1Text}>
-          {item?.playing_team_detail?.team_name}
-        </Text>
-        <Text style={styles.VsText}>Vs.</Text>
+        <Text style={styles.teamText}>{item?.playing_team_detail?.team_name}</Text>
+        <Text style={styles.vsText}>Vs.</Text>
         <Image
           source={require('../assets/images/redsocksLogo.png')}
-          style={styles.SmallIcon}
+          style={styles.smallIcon}
         />
-        <Text style={styles.Team2Text}>
-          {item?.opponent_team_detail?.team_name}
-        </Text>
+        <Text style={styles.teamText}>{item?.opponent_team_detail?.team_name}</Text>
       </View>
     </View>
   );
@@ -64,10 +63,7 @@ const renderItem = ({item}: any) => {
 
 const EventScreen = ({navigation}: any) => {
   const [gloverEvent] = useLazyGloversEventGetQuery();
-
-  const gloversGetEvent = useSelector(
-    (state: any) => state.glover.gloverDetailsGetEvent,
-  );
+  const gloversGetEvent = useSelector((state: any) => state.glover.gloverDetailsGetEvent);
 
   useEffect(() => {
     async function _dashboardEvent() {
@@ -77,189 +73,171 @@ const EventScreen = ({navigation}: any) => {
   }, []);
 
   return (
-    <View style={styles.ReturnContainer}>
+    <View style={styles.container}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
-      <View style={styles.EventsView}>
-        <Text style={styles.EventsText}>Events</Text>
-        <View style={styles.SearchBellView}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Events</Text>
+        <View style={styles.iconContainer}>
           <TouchableOpacity>
             <Image
               source={require('../assets/images/search_big.png')}
-              style={styles.Search}
+              style={styles.icon}
             />
           </TouchableOpacity>
           <TouchableOpacity>
             <Image
               source={require('../assets/images/notification_bell.png')}
-              style={styles.Notification_bell}
+              style={styles.icon}
             />
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.MarchView}>
-        <Text style={styles.MarchText}>July 2023</Text>
+      <View style={styles.subHeader}>
+        <Text style={styles.subHeaderText}>July 2023</Text>
       </View>
       <FlatList
         data={gloversGetEvent?.data}
         renderItem={renderItem}
         keyExtractor={item => item._id}
-        contentContainerStyle={styles.ContentContainer}
+        contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={styles.ItemSeperator} />}
+        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
       />
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Login');
+          navigation.navigate('CreateTeam');
         }}
-        style={styles.RoundAddPosition}>
+        style={styles.addButton}>
         <Image
           source={require('../assets/images/round_add.png')}
-          style={styles.RoundAdd}
+          style={styles.addIcon}
         />
       </TouchableOpacity>
     </View>
   );
 };
+
 export default EventScreen;
+
 const styles = StyleSheet.create({
-  ReturnContainer: {
-    flex: 1,
+  container: {
+    // flex: 1,
+    flexGrow:1,
     backgroundColor: 'white',
   },
-  EventsView: {
+  header: {
     flexDirection: 'row',
-    marginTop: 50,
+    justifyContent: 'space-between',
+    // padding: 15,
+    paddingVertical:40,
+    paddingHorizontal:20,
+    alignItems: 'center',
   },
-  EventsText: {
+  headerText: {
+    fontSize: 22,
     color: 'black',
-    fontSize: 25,
-    marginLeft: 20,
     fontWeight: 'bold',
   },
-  SearchBellView: {
+  iconContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 200,
   },
-  Search: {
-    width: 18,
-    height: 18,
+  icon: {
+    width: 20,
+    height: 20,
     margin: 10,
+    resizeMode: 'contain',
   },
-  Notification_bell: {
-    width: 15,
-    height: 18,
-    margin: 10,
-  },
-  MarchView: {
+  subHeader: {
     backgroundColor: '#F5F5F5',
-    padding: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
   },
-  MarchText: {
-    fontSize: 18,
-    marginLeft: 20,
+  subHeaderText: {
+    fontSize: 16,
     fontWeight: '600',
   },
-  DayTimeOverallView: {
-    flexDirection: 'row',
+  renderView: {
+    marginVertical: 10,
+    paddingHorizontal: 15,
   },
-  DayTimeView: {
-    marginTop: 10,
+  dayTimeOverallView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dayTimeView: {
     backgroundColor: '#F5F5F5',
-    padding: 5,
-    borderRadius: 5,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginRight: 15,
   },
-  DayText: {
+  dayText: {
     color: 'black',
   },
-  DateText: {
+  dateText: {
     color: 'black',
-    marginLeft: 5,
+    fontWeight: 'bold',
   },
-  TitleView: {
-    flexDirection: 'row',
-    margin: 5,
+  titleView: {
+    flex: 1,
   },
-  TitleText: {
+  titleText: {
     color: '#ff4a4a',
     fontWeight: 'bold',
-    marginLeft: 20,
   },
-  TimeDeleteView: {
+  timeDeleteView: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 5,
   },
-  TimeText: {
+  timeText: {
     color: '#0862ae',
     fontSize: 16,
     fontWeight: '500',
-    paddingHorizontal: 100,
   },
-  Delete: {
-    width: 24,
-    height: 24,
+  delete: {
+    width: 20,
+    height: 20,
+    resizeMode:'contain',
     tintColor: 'red',
   },
-  SmallIconView: {
+  smallIconView: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginVertical: 10,
   },
-  SmallIcon: {
-    width: 15,
-    height: 15,
-    marginLeft: 40,
+  smallIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
-  Team1Text: {
+  teamText: {
     color: 'black',
     fontWeight: '500',
-    fontSize: 13,
-    marginLeft: 10,
-  },
-  VsText: {
-    color: 'red',
     fontSize: 14,
-    marginLeft: 30,
+  },
+  vsText: {
+    color: 'red',
     fontWeight: 'bold',
   },
-  Team2Text: {
-    color: 'black',
-    fontWeight: '500',
-    fontSize: 13,
-    marginLeft: 10,
+  listContainer: {
+    paddingHorizontal: 10,
   },
-  ContentContainer: {
-    padding: 10,
+  itemSeparator: {
+    height: 1,
+    backgroundColor: '#ddd',
+    marginHorizontal: width * 0.1,
   },
-  RoundAdd: {
-    width: 50,
-    height: 50,
-    marginBottom: 10,
-  },
-  RoundAddPosition: {
+  addButton: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 20,
     right: 20,
   },
-  // RenderView
-  RenderView: {
-    marginVertical: 10,
-    paddingHorizontal: 20,
-  },
-  ItemSeperator: {
-    borderBottomWidth: 0.3,
-    borderBottomColor: 'black',
-    height: 10,
-    width: 300,
-    marginLeft: 55,
+  addIcon: {
+    width: 50,
+    height: 50,
+    resizeMode:'contain'
   },
 });
-
-// ListFooterComponent={() => (
-//   <View
-//     style={{
-//       borderBottomWidth: 0.2,
-//       borderBottomColor: 'black',
-//       height: 15,
-//       width: 300,
-//       marginLeft: 55,
-//     }}
-//   />
-// )}
